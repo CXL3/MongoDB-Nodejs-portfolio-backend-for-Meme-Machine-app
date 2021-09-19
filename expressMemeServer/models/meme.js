@@ -30,11 +30,11 @@ const memeSchema = new Schema(
     },
     upvotes: {
       type: Number,
-      required: false,
+      required: true,
     },
     downvotes: {
       type: Number,
-      required: false,
+      required: true,
     },
     featured: {
       type: Boolean,

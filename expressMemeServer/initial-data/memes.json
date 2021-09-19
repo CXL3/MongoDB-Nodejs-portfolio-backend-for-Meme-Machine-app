@@ -1,0 +1,20 @@
+[
+    {
+    "_id": {
+            "$oid": "5f02803a258ff350affd3602"
+        },
+      "name": "Service dog",
+      "image": "images/ServiceDog.jpg",
+      "upvotes": 99,
+      "downvotes": 1,
+      "featured": true,
+      "createdAt": {
+		"$date": "2020-07-06T01:36:58.187Z"
+	},
+	"updatedAt": {
+		"$date": "2020-07-06T01:36:58.187Z"
+	},
+	"__v": 0
+
+    }
+]
