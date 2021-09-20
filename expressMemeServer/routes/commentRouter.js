@@ -1,7 +1,5 @@
 const express = require("express");
 const Comment = require("../models/comment");
-const authenticate = require("../authenticate");
-const cors = require("./cors");
 
 const commentRouter = express.Router();
 

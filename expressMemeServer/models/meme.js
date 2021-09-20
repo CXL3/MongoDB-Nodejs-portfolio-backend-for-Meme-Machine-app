@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
-
 const memeSchema = new Schema(
   {
     name: {
@@ -26,7 +24,6 @@ const memeSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    comments: [commentSchema],
   },
   {
     timestamps: true,
