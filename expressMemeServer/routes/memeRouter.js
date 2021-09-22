@@ -1,7 +1,9 @@
 const express = require('express');
 const Meme = require('../models/meme');
+const authenticate = require('../authenticate');
 
 const memeRouter = express.Router();
+
 
 memeRouter.route('/')
 .get((req, res, next) => {
@@ -13,7 +15,7 @@ memeRouter.route('/')
     })
     .catch(err => next(err));
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
     Meme.create(req.body)
     .then(meme => {
         console.log('Meme Created ', meme);
@@ -23,11 +25,11 @@ memeRouter.route('/')
     })
     .catch(err => next(err));
 })
-.put((req, res) => {
+.put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /memes');
 })
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
     Meme.deleteMany()
     .then(response => {
         res.statusCode = 200;
@@ -47,11 +49,11 @@ memeRouter.route('/:memeId')
     })
     .catch(err => next(err));
 })
-.post((req, res) => {
+.post(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end(`POST operation not supported on /memes/${req.params.memeId}`);
 })
-.put((req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
     Meme.findByIdAndUpdate(req.params.memeId, {
         $set: req.body
     }, { new: true })
@@ -62,7 +64,7 @@ memeRouter.route('/:memeId')
     })
     .catch(err => next(err));
 })
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
     Meme.findByIdAndDelete(req.params.memeId)
     .then(response => {
         res.statusCode = 200;

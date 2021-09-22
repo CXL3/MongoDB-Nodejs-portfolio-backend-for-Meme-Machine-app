@@ -1,69 +1,71 @@
 const express = require("express");
 const Comment = require("../models/comment");
+const authenticate = require('../authenticate');
 
 const commentRouter = express.Router();
+
 
 commentRouter
   .route("/")
   .get((req, res, next) => {
-    Meme.findById(req.params.memeId)
-      .then((meme) => {
-        if (meme) {
+    comment.findById(req.params.commentId)
+      .then((comment) => {
+        if (comment) {
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
-          res.json(meme.comments);
+          res.json(comments);
         } else {
-          err = new Error(`Meme ${req.params.memeId} not found`);
+          err = new Error(`comment ${req.params.commentId} not found`);
           err.status = 404;
           return next(err);
         }
       })
       .catch((err) => next(err));
   })
-  .post((req, res, next) => {
-    Meme.findById(req.params.memeId)
-      .then((meme) => {
-        if (meme) {
-          meme.comments.push(req.body);
-          meme
+  .post(authenticate.verifyUser,(req, res, next) => {
+    comment.findById(req.params.commentId)
+      .then((comment) => {
+        if (comment) {
+          comment.comments.push(req.body);
+          comment
             .save()
-            .then((meme) => {
+            .then((comment) => {
               res.statusCode = 200;
               res.setHeader("Content-Type", "application/json");
-              res.json(meme);
+              res.json(comment);
             })
             .catch((err) => next(err));
         } else {
-          err = new Error(`Meme ${req.params.memeId} not found`);
+          err = new Error(`comment ${req.params.commentId} not found`);
           err.status = 404;
           return next(err);
         }
       })
       .catch((err) => next(err));
   })
-  .put((req, res) => {
+  .put(authenticate.verifyUser,(req, res) => {
     res.statusCode = 403;
     res.end(
-      `PUT operation not supported on /memes/${req.params.memeId}/comments`
+      `PUT operation not supported on /comments/${req.params.commentId}/comments`
     );
   })
-  .delete((req, res, next) => {
-    Meme.findById(req.params.memeId)
-      .then((meme) => {
-        if (meme) {
-          for (let i = meme.comments.length - 1; i >= 0; i--) {
-            meme.comments.id(meme.comments[i]._id).remove();
+  .delete(authenticate.verifyUser,(req, res, next) => {
+    comment.findById(req.params.commentId)
+      .then((comment) => {
+        if (comment) {
+          for (let i = comment.comments.length - 1; i >= 0; i--) {
+            comment.comments.id(comment.comments[i]._id).remove();
           }
-          meme
+          comment
             .save()
-            .then((meme) => {
+            .then((comment) => {
               res.statusCode = 200;
               res.setHeader("Content-Type", "application/json");
-              res.json(meme);
+              res.json(comment);
             })
             .catch((err) => next(err));
         } else {
-          err = new Error(`Meme ${req.params.memeId} not found`);
+          err = new Error(`comment ${req.params.commentId} not found`);
           err.status = 404;
           return next(err);
         }
@@ -74,14 +76,14 @@ commentRouter
 commentRouter
   .route("/:commentId")
   .get((req, res, next) => {
-    Meme.findById(req.params.memeId)
-      .then((meme) => {
-        if (meme && meme.comments.id(req.params.commentId)) {
+    comment.findById(req.params.commentId)
+      .then((comment) => {
+        if (comment && comment.comments.id(req.params.commentId)) {
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
-          res.json(meme.comments.id(req.params.commentId));
-        } else if (!meme) {
-          err = new Error(`Meme ${req.params.memeId} not found`);
+          res.json(comment.comments.id(req.params.commentId));
+        } else if (!comment) {
+          err = new Error(`comment ${req.params.commentId} not found`);
           err.status = 404;
           return next(err);
         } else {
@@ -92,32 +94,32 @@ commentRouter
       })
       .catch((err) => next(err));
   })
-  .post((req, res) => {
+  .post(authenticate.verifyUser,(req, res) => {
     res.statusCode = 403;
     res.end(
-      `POST operation not supported on /memes/${req.params.memeId}/comments/${req.params.commentId}`
+      `POST operation not supported on /comments/${req.params.commentId}/comments/${req.params.commentId}`
     );
   })
-  .put((req, res, next) => {
-    Meme.findById(req.params.memeId)
-      .then((meme) => {
-        if (meme && meme.comments.id(req.params.commentId)) {
+  .put(authenticate.verifyUser,(req, res, next) => {
+    comment.findById(req.params.commentId)
+      .then((comment) => {
+        if (comment && comment.comments.id(req.params.commentId)) {
           if (req.body.rating) {
-            meme.comments.id(req.params.commentId).rating = req.body.rating;
+            comment.comments.id(req.params.commentId).rating = req.body.rating;
           }
           if (req.body.text) {
-            meme.comments.id(req.params.commentId).text = req.body.text;
+            comment.comments.id(req.params.commentId).text = req.body.text;
           }
-          meme
+          comment
             .save()
-            .then((meme) => {
+            .then((comment) => {
               res.statusCode = 200;
               res.setHeader("Content-Type", "application/json");
-              res.json(meme);
+              res.json(comment);
             })
             .catch((err) => next(err));
-        } else if (!meme) {
-          err = new Error(`Meme ${req.params.memeId} not found`);
+        } else if (!comment) {
+          err = new Error(`comment ${req.params.commentId} not found`);
           err.status = 404;
           return next(err);
         } else {
@@ -128,21 +130,21 @@ commentRouter
       })
       .catch((err) => next(err));
   })
-  .delete((req, res, next) => {
-    Meme.findById(req.params.memeId)
-      .then((meme) => {
-        if (meme && meme.comments.id(req.params.commentId)) {
-          meme.comments.id(req.params.commentId).remove();
-          meme
+  .delete(authenticate.verifyUser,(req, res, next) => {
+    comment.findById(req.params.commentId)
+      .then((comment) => {
+        if (comment && comment.comments.id(req.params.commentId)) {
+          comment.comments.id(req.params.commentId).remove();
+          comment
             .save()
-            .then((meme) => {
+            .then((comment) => {
               res.statusCode = 200;
               res.setHeader("Content-Type", "application/json");
-              res.json(meme);
+              res.json(comment);
             })
             .catch((err) => next(err));
-        } else if (!meme) {
-          err = new Error(`Meme ${req.params.memeId} not found`);
+        } else if (!comment) {
+          err = new Error(`comment ${req.params.commentId} not found`);
           err.status = 404;
           return next(err);
         } else {
