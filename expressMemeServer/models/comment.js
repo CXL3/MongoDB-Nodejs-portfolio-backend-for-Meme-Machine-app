@@ -8,8 +8,8 @@ const commentSchema = new Schema(
       required: true,
     },
     author: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {
@@ -17,4 +17,4 @@ const commentSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model('Comment', commentSchema);
+module.exports = mongoose.model("Comment", commentSchema);
