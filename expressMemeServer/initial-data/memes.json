@@ -16,5 +16,145 @@
 	},
 	"__v": 0
 
+    },
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdc0"
+        },
+       
+        "featured" : true,
+        "name" : "Wrong gang",
+        "image" : "images/gang.jpg",
+        "upvotes" : 224,
+        "downvotes" : 8,
+        "createdAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "updatedAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "__v" : 0
+    },
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdc1"
+        },
+       
+        "featured" : true,
+        "name": "Yes",
+        "image": "images/memelord.jpg",
+        "upvotes": 124,
+        "downvotes": 33,
+        "createdAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "updatedAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "__v" : 0
+    },  
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdc2"
+        },
+       
+        "featured" : true,
+        "name": "The perfect guy",
+        "image": "images/police.jpg",
+        "upvotes": 986,
+        "downvotes": 3,
+        "createdAt" : {"$date": "2021-09-23T01:05:39.600Z"},
+        "updatedAt" : {"$date": "2021-09-23T01:06:30.600Z"},
+        "__v" : 0
+    },
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdc4"
+        },
+       
+        "featured" : true,
+        "name": "How I actually sit",
+        "image": "images/sit.jpg",
+        "upvotes": 48,
+        "downvotes": 3,
+        "createdAt" : {"$date": "2021-09-23T01:05:36.600Z"},
+        "updatedAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "__v" : 0
+    }, 
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdc7"
+        },
+       
+        "featured" : true,
+        "name": "Hot soup",
+        "image": "images/soup.png",
+        "upvotes": 243,
+        "downvotes": 9,
+        "createdAt" : {"$date": "2021-09-23T01:08:38.600Z"},
+        "updatedAt" : {"$date": "2021-09-23T01:10:38.600Z"},
+        "__v" : 0
+    },  
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdg0"
+        },
+       
+        "featured" : true,
+        "name": "Potatos",
+        "image": "images/potato.jpg",
+        "upvotes": 33,
+        "downvotes": 6,
+        "createdAt" : {"$date": "2021-07-23T01:05:38.600Z"},
+        "updatedAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "__v" : 0
+    }, 
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd4p1bdc0"
+        },
+       
+        "featured" : true,
+        "name": "Cookies",
+        "image": "images/cookies.jpg",
+        "upvotes": 67,
+        "downvotes": 3,
+        "createdAt" : {"$date": "2021-09-20T01:05:38.600Z"},
+        "updatedAt" : {"$date": "2021-09-21T01:05:38.600Z"},
+        "__v" : 0
+    },
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdc0"
+        },
+       
+        "featured" : true,
+        "name": "Haha",
+        "image": "images/stone.jpg",
+        "upvotes": 656,
+        "downvotes": 47,
+        "createdAt" : {"$date": "2021-07-23T01:05:38.600Z"},
+        "updatedAt" : {"$date": "2021-9-23T01:06:38.600Z"},
+        "__v" : 0
+    }, 
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdc0"
+        },
+       
+        "featured" : true,
+        "name": "It is just that easy",
+        "image": "images/easy.jpg",
+        "upvotes": 656,
+        "downvotes": 9,
+        "createdAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "updatedAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "__v" : 0
+    },
+    {
+        "_id": {
+            "$oid": "614bd2e262ad790dd461bdc0"
+        },
+       
+        "featured" : true,
+        "name": "What?!",
+        "image": "images/handwash.jpg",
+        "upvotes": 98,
+        "downvotes": 2,
+        "createdAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "updatedAt" : {"$date": "2021-09-23T01:05:38.600Z"},
+        "__v" : 0
     }
 ]
