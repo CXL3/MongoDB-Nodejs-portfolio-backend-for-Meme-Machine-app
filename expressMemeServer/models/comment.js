@@ -11,9 +11,13 @@ const commentSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    meme: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Meme",
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 

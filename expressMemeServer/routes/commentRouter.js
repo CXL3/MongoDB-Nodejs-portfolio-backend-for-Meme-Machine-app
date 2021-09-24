@@ -4,151 +4,138 @@ const authenticate = require('../authenticate');
 
 const commentRouter = express.Router();
 
-
 commentRouter
   .route("/")
-  .get((req, res, next) => {
-    comment.findById(req.params.commentId)
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (req, res, next) => {
+    Comment.find()
+      .populate("author")
       .then((comment) => {
-        if (comment) {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(comment);
+      })
+      .catch((err) => next(err));
+  })
+  .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    if (req.body) {
+      console.log("req.body:", req.body);
+      req.body.author = req.user._id;
+      Comment.create(req.body)
+        .then((comment) => {
+          Comment.findById(comment._id)
+            .populate("author")
+            .then((comment) => {
+              res.statusCode = 200;
+              res.setHeader("Content-Type", "application/json");
+              res.json(comment);
+            });
+        })
+        .catch((err) => next(err));
+    } else {
+      const err = new Error("Comment not found in request body");
+      err.status = 404;
+      return next(err);
+    }
+  })
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    res.statusCode = 403;
+    res.end("PUT operation not supported on /comments/");
+  })
+  .delete(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res, next) => {
+      Comment.remove({})
+        .then((resp) => {
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
-          res.json(comments);
-        } else {
-          err = new Error(`comment ${req.params.commentId} not found`);
-          err.status = 404;
-          return next(err);
-        }
-      })
-      .catch((err) => next(err));
-  })
-  .post(authenticate.verifyUser,(req, res, next) => {
-    comment.findById(req.params.commentId)
-      .then((comment) => {
-        if (comment) {
-          comment.comments.push(req.body);
-          comment
-            .save()
-            .then((comment) => {
-              res.statusCode = 200;
-              res.setHeader("Content-Type", "application/json");
-              res.json(comment);
-            })
-            .catch((err) => next(err));
-        } else {
-          err = new Error(`comment ${req.params.commentId} not found`);
-          err.status = 404;
-          return next(err);
-        }
-      })
-      .catch((err) => next(err));
-  })
-  .put(authenticate.verifyUser,(req, res) => {
-    res.statusCode = 403;
-    res.end(
-      `PUT operation not supported on /comments/${req.params.commentId}/comments`
-    );
-  })
-  .delete(authenticate.verifyUser,(req, res, next) => {
-    comment.findById(req.params.commentId)
-      .then((comment) => {
-        if (comment) {
-          for (let i = comment.comments.length - 1; i >= 0; i--) {
-            comment.comments.id(comment.comments[i]._id).remove();
-          }
-          comment
-            .save()
-            .then((comment) => {
-              res.statusCode = 200;
-              res.setHeader("Content-Type", "application/json");
-              res.json(comment);
-            })
-            .catch((err) => next(err));
-        } else {
-          err = new Error(`comment ${req.params.commentId} not found`);
-          err.status = 404;
-          return next(err);
-        }
-      })
-      .catch((err) => next(err));
-  });
+          res.json(resp);
+        })
+        .catch((err) => next(err));
+    }
+  );
 
 commentRouter
   .route("/:commentId")
-  .get((req, res, next) => {
-    comment.findById(req.params.commentId)
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors, (req, res, next) => {
+    Comment.findById(req.params.commentId)
+      .populate("author")
       .then((comment) => {
-        if (comment && comment.comments.id(req.params.commentId)) {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(comment.comments.id(req.params.commentId));
-        } else if (!comment) {
-          err = new Error(`comment ${req.params.commentId} not found`);
-          err.status = 404;
-          return next(err);
-        } else {
-          err = new Error(`Comment ${req.params.commentId} not found`);
-          err.status = 404;
-          return next(err);
-        }
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(comment);
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser,(req, res) => {
+  .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end(
-      `POST operation not supported on /comments/${req.params.commentId}/comments/${req.params.commentId}`
+      "POST operation not supported on /comments/" + req.params.commentId
     );
   })
-  .put(authenticate.verifyUser,(req, res, next) => {
-    comment.findById(req.params.commentId)
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Comment.findById(req.params.commentId)
       .then((comment) => {
-        if (comment && comment.comments.id(req.params.commentId)) {
-          if (req.body.rating) {
-            comment.comments.id(req.params.commentId).rating = req.body.rating;
+        if (comment) {
+          if (!comment.author.equals(req.user._id)) {
+            const err = new Error(
+              "You are not authorized to update this comment!"
+            );
+            err.status = 403;
+            return next(err);
           }
-          if (req.body.text) {
-            comment.comments.id(req.params.commentId).text = req.body.text;
-          }
-          comment
-            .save()
+          req.body.author = req.user._id;
+          Comment.findByIdAndUpdate(
+            req.params.commentId,
+            {
+              $set: req.body,
+            },
+            { new: true }
+          )
             .then((comment) => {
-              res.statusCode = 200;
-              res.setHeader("Content-Type", "application/json");
-              res.json(comment);
+              Comment.findById(comment._id)
+                .populate("author")
+                .then((comment) => {
+                  res.statusCode = 200;
+                  res.setHeader("Content-Type", "application/json");
+                  res.json(comment);
+                })
+                .catch((err) => next(err));
             })
             .catch((err) => next(err));
-        } else if (!comment) {
-          err = new Error(`comment ${req.params.commentId} not found`);
-          err.status = 404;
-          return next(err);
         } else {
-          err = new Error(`Comment ${req.params.commentId} not found`);
+          const err = new Error(`Comment ${req.params.commentId} not found`);
           err.status = 404;
           return next(err);
         }
       })
       .catch((err) => next(err));
   })
-  .delete(authenticate.verifyUser,(req, res, next) => {
-    comment.findById(req.params.commentId)
+  .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Comment.findById(req.params.commentId)
       .then((comment) => {
-        if (comment && comment.comments.id(req.params.commentId)) {
-          comment.comments.id(req.params.commentId).remove();
-          comment
-            .save()
-            .then((comment) => {
+        if (comment) {
+          if (!comment.author.equals(req.user._id)) {
+            const err = new Error(
+              "You are not authorized to delete this comment!"
+            );
+            err.status = 403;
+            return next(err);
+          }
+          Comment.findByIdAndRemove(req.params.commentId)
+            .then((resp) => {
               res.statusCode = 200;
               res.setHeader("Content-Type", "application/json");
-              res.json(comment);
+              res.json(resp);
             })
             .catch((err) => next(err));
-        } else if (!comment) {
-          err = new Error(`comment ${req.params.commentId} not found`);
-          err.status = 404;
-          return next(err);
         } else {
-          err = new Error(`Comment ${req.params.commentId} not found`);
+          const err = new Error(`Comment ${req.params.commentId} not found`);
           err.status = 404;
           return next(err);
         }
